@@ -58,13 +58,13 @@ Return EXACTLY this format:
 
     const parsed = JSON.parse(text.slice(start, end + 1));
 
-    res.json(parsed);
+    response.json(parsed);
 
   } catch (err) {
     console.error("Analyze failed:", err.message);
 
     // ✅ ALWAYS RETURN SOMETHING (NO FRONTEND BREAK)
-    res.json({
+    response.json({
       logical_flaw:
         "The idea lacks clarity in real-world execution and practical constraints.",
       risks: {
@@ -82,4 +82,5 @@ Return EXACTLY this format:
 app.listen(5000, () => {
   console.log("Backend running with Groq AI on http://localhost:5000");
 });
+
 

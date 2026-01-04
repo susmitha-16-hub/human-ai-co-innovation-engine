@@ -5,32 +5,34 @@ export default function RiskAnalysis() {
   const [output, setOutput] = useState("");
 
   const analyzeIdea = async () => {
-    try {
-      setOutput("Analyzing...");
+  try {
+    const response = await fetch(
+      "https://human-ai-co-innovation-engine.onrender.com/analyze",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idea })
+      }
+    );
 
-      const response = await fetch(
-        "https://human-ai-co-innovation-engine.onrender.com/analyze",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ idea })
-        }
-      );
+    const data = await response.json();
 
-      const data = await response.json();
+    setLogicalFlaw(data.logical_flaw || "No summary");
+    setSuggestion(data.improvement_suggestion || "No suggestion");
+    setRisks(
+      data.risks || {
+        technical: "Medium",
+        ethical: "Medium",
+        scalability: "Medium"
+      }
+    );
+  } catch (err) {
+    setLogicalFlaw("Frontend error");
+    console.error(err);
+  }
+};
 
-      // FORCE DISPLAY – NO CONDITIONS
-      setOutput(
-        `SUMMARY:\n${data.logical_flaw}\n\nSUGGESTION:\n${data.improvement_suggestion}`
-      );
 
-    } catch (error) {
-      setOutput("ERROR: Backend not reachable");
-      console.error(error);
-    }
-  };
 
   return (
     <div style={{ color: "#fff", padding: "20px" }}>
@@ -66,4 +68,5 @@ export default function RiskAnalysis() {
     </div>
   );
 }
+
 

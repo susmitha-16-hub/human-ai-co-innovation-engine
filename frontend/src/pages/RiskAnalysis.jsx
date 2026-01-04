@@ -74,9 +74,11 @@ export default function RiskAnalysis() {
   /* ---------- 📊 ANALYZE ---------- */
   const analyzeIdea = async () => {
     try {
-      axios.post("https://human-ai-co-innovation-engine.onrender.com/analyze", {
-        idea
-      });
+      axios.post(
+  "https://human-ai-co-innovation-engine.onrender.com/analyze",
+  { idea }
+);
+
 
       console.log("Groq Response:", res.data);
 
@@ -227,4 +229,5 @@ export default function RiskAnalysis() {
     </div>
   );
 }
+
 

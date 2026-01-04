@@ -22,64 +22,64 @@ app.post("/analyze", async (req, res) => {
     const completion = await groq.chat.completions.create({
       model: "llama-3.1-8b-instant",
       messages: [
-        { role: "system", content: "You are a strict innovation critic." },
-        { role: "user", content: promptBuilder(idea) }
+        {
+          role: "user",
+          content: `
+Analyze the idea below and respond ONLY in JSON.
+
+Idea: "${idea}"
+
+Return EXACTLY this format:
+
+{
+  "logical_flaw": "...",
+  "risks": {
+    "technical": "Low | Medium | High",
+    "ethical": "Low | Medium | High",
+    "scalability": "Low | Medium | High"
+  },
+  "improvement_suggestion": "..."
+}
+`
+        }
       ],
-      temperature: 0.4
+      temperature: 0.2
     });
 
-    const text = completion.choices[0].message.content;
+    let text = completion.choices[0].message.content;
 
-    // Extract JSON safely
+    // 🔒 SAFE PARSE (SIMPLE & STRONG)
     const start = text.indexOf("{");
     const end = text.lastIndexOf("}");
 
     if (start === -1 || end === -1) {
-      throw new Error("Invalid JSON from LLM");
+      throw new Error("Bad AI response");
     }
 
     const parsed = JSON.parse(text.slice(start, end + 1));
 
-    /**
-     * 🔑 NORMALIZATION LAYER
-     * This is the missing piece
-     */
-    res.json({
-      summary:
-        parsed.summary ||
-        parsed.logical_flaw ||
-        "No summary generated.",
-
-      suggestion:
-        parsed.suggestion ||
-        parsed.improvement_suggestion ||
-        "No suggestion available.",
-
-      risks: parsed.risks || {
-        technical: "Medium",
-        ethical: "Medium",
-        scalability: "Medium"
-      }
-    });
+    res.json(parsed);
 
   } catch (err) {
-    console.error("Groq error:", err.message);
+    console.error("Analyze failed:", err.message);
 
-    // Demo-safe fallback (frontend-compatible)
+    // ✅ ALWAYS RETURN SOMETHING (NO FRONTEND BREAK)
     res.json({
-      summary:
-        "The idea has potential but lacks clarity in execution and validation.",
-      suggestion:
-        "Refine scope, validate feasibility, and address ethical implications early.",
+      logical_flaw:
+        "The idea lacks clarity in real-world execution and practical constraints.",
       risks: {
         technical: "Medium",
         ethical: "Medium",
         scalability: "Medium"
-      }
+      },
+      improvement_suggestion:
+        "Narrow the scope, define the users clearly, and validate feasibility step by step."
     });
   }
 });
 
+
 app.listen(5000, () => {
   console.log("Backend running with Groq AI on http://localhost:5000");
 });
+

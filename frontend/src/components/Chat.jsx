@@ -8,7 +8,7 @@ export default function Chat({ setAnalysis, setHistory }) {
   const { speak } = useTextToSpeech();
 
   const analyze = async () => {
-    const res = await fetch("http://localhost:5000/analyze", {
+    const response = await fetch("http://localhost:5000/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ idea })
@@ -36,3 +36,4 @@ export default function Chat({ setAnalysis, setHistory }) {
     </div>
   );
 }
+

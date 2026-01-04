@@ -74,7 +74,7 @@ export default function RiskAnalysis() {
   /* ---------- 📊 ANALYZE ---------- */
   const analyzeIdea = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/analyze", {
+      axios.post("https://human-ai-co-innovation-engine.onrender.com/analyze", {
         idea
       });
 
@@ -227,3 +227,4 @@ export default function RiskAnalysis() {
     </div>
   );
 }
+

@@ -73,29 +73,39 @@ export default function RiskAnalysis() {
 
   /* ---------- 📊 ANALYZE ---------- */
   const analyzeIdea = async () => {
-    try {
-      axios.post(
-  "https://human-ai-co-innovation-engine.onrender.com/analyze",
-  { idea }
-);
+  alert("Analyze button clicked");
 
+  try {
+    const res = await fetch(
+      "https://human-ai-co-innovation-engine.onrender.com/analyze",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ idea })
+      }
+    );
 
-      console.log("Groq Response:", res.data);
+    alert("Request sent to backend");
 
-      setLogicalFlaw(res.data.logical_flaw);
-      setSuggestion(res.data.improvement_suggestion);
-      setRisks(res.data.risks);
+    const data = await res.json();
+    alert("Response received");
 
-      // 🔥 AUTO-SPEAK AFTER ANALYZE
-      autoSpeakRisk(
-        res.data.logical_flaw,
-        res.data.improvement_suggestion
-      );
+    setLogicalFlaw(data.logical_flaw || "NO logical_flaw");
+    setSuggestion(data.improvement_suggestion || "NO suggestion");
+    setRisks(data.risks || {
+      technical: "Medium",
+      ethical: "Medium",
+      scalability: "Medium"
+    });
 
-    } catch (err) {
-      console.error("Frontend error:", err);
-    }
-  };
+  } catch (err) {
+    alert("ERROR: Backend not reachable");
+    console.error(err);
+  }
+};
+
 
   const pieData = [
     { name: "Technical", value: riskValue[risks.technical] },
@@ -229,5 +239,6 @@ export default function RiskAnalysis() {
     </div>
   );
 }
+
 
 

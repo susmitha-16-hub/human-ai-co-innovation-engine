@@ -14,7 +14,7 @@ export default function Chat({ setAnalysis, setHistory }) {
       body: JSON.stringify({ idea })
     });
 
-    const data = await res.json();
+    const data = await response.json();
     setAnalysis(data);
     setHistory(h => [...h, idea]);
 
@@ -36,4 +36,5 @@ export default function Chat({ setAnalysis, setHistory }) {
     </div>
   );
 }
+
 

@@ -73,10 +73,10 @@ export default function RiskAnalysis() {
 
   /* ---------- 📊 ANALYZE ---------- */
   const analyzeIdea = async () => {
-  alert("Analyze button clicked");
-
   try {
-    const res = await fetch(
+    console.log("Analyze clicked");
+
+    const response = await fetch(
       "https://human-ai-co-innovation-engine.onrender.com/analyze",
       {
         method: "POST",
@@ -87,24 +87,28 @@ export default function RiskAnalysis() {
       }
     );
 
-    alert("Request sent to backend");
+    console.log("Request sent");
 
-    const data = await res.json();
-    alert("Response received");
+    const data = await response.json();
+    console.log("Response received:", data);
 
-    setLogicalFlaw(data.logical_flaw || "NO logical_flaw");
-    setSuggestion(data.improvement_suggestion || "NO suggestion");
-    setRisks(data.risks || {
-      technical: "Medium",
-      ethical: "Medium",
-      scalability: "Medium"
-    });
+    setLogicalFlaw(data.logical_flaw || "No summary returned");
+    setSuggestion(data.improvement_suggestion || "No suggestion returned");
+    setRisks(
+      data.risks || {
+        technical: "Medium",
+        ethical: "Medium",
+        scalability: "Medium"
+      }
+    );
 
-  } catch (err) {
-    alert("ERROR: Backend not reachable");
-    console.error(err);
+  } catch (error) {
+    console.error("Analyze failed:", error);
+    setLogicalFlaw("Frontend error: unable to analyze idea");
   }
 };
+
+
 
 
   const pieData = [
@@ -239,6 +243,7 @@ export default function RiskAnalysis() {
     </div>
   );
 }
+
 
 
 
